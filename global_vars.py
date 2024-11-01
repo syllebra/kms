@@ -4,3 +4,6 @@ global monitors_manager
 cursor_manager = None
 mouse_manager = None
 monitors_manager = None
+
+global command_queues
+command_queues = {}
