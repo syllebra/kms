@@ -47,9 +47,19 @@ class InputListenerSocketSend:
 
             if(self.addr in gv.command_queues):
                 cmd = gv.command_queues[self.addr].get()
-                print("Treating ", cmd)
-                if(cmd["cmd"]=="move"):
-                    self.connection.send(f'<<{"move"}-{cmd["pos"][0]},{cmd["pos"][1]}>>'.encode())
+                try:
+                    #print("Treating ", cmd)
+                    if(cmd["cmd"]=="move"):
+                        self.connection.send(f'<<{"move"}-{cmd["pos"][0]},{cmd["pos"][1]}>>'.encode())
+                except ConnectionError as ce:
+                    print(f"Unable to reach client with socket {self.connection} ({ce}). Closing...")
+                    self.stop = True
+                except ConnectionResetError as ce:
+                    print(f"Connection reset with {self.connection} ({ce}). Closing...")
+                    self.stop = True
+                except Exception as e:
+                    print(f"Exception ({ce}). Closing...")
+                    self.stop = True
             #print("loop")
             #time.sleep(0.05)
             pass
