@@ -3,6 +3,8 @@ import re
 import sys
 import pyautogui
 from pynput.mouse import Controller, Button
+import mouse
+
 
 # Improve performance, pyautogui has a 'fail-safe', where you get 0.1s to move the mouse to 0,0 to exit. https://stackoverflow.com/questions/46736652/pyautogui-press-causing-lag-when-called
 # Let's remove that for now. May find other ways in the future
@@ -44,7 +46,10 @@ def perform_according(cmd):
     elif action == 'move':
         print(cmd)
         pos = key.split(",")
-        mouse_ctrl.move(int(pos[0]), int(pos[1]))
+
+        p = mouse.get_position()
+        mouse_ctrl.move(int(pos[0])-p[0],int(pos[1])-p[1])
+        
         # mouse_action = {
         #     'left': [-10,0],
         #     'down': [0,10],
