@@ -1,7 +1,7 @@
 import global_vars as gv
 from cursor_manager import CursorManager
 from monitors_manager import MonitorsManager
-from mouse_manager import MouseManager
+from devices_manager import DevicesManager
 from server import start_server_thread
 from queue import Queue
 
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     window = tk.Tk()
     gv.cursor_manager = CursorManager()
     gv.monitors_manager = MonitorsManager()
-    gv.mouse_manager = MouseManager(window.winfo_id())
+    gv.devices_manager = DevicesManager(window.winfo_id())
     gv.command_queues = {}
     window.withdraw()
 
@@ -24,9 +24,17 @@ if __name__ == "__main__":
         if(not data["monitor"].is_distant):
             return
         if(len(gv.command_queues)>0):
-            gv.command_queues[list(gv.command_queues.keys())[0]].put({"cmd":"move","pos":data["monitor_pos"]})
+            gv.command_queues[list(gv.command_queues.keys())[0]].put({"cmd":data["cmd"],"pos":data["monitor_pos"]})
 
-    gv.mouse_manager.move_callbacks.append(moved_cb)
+    def key_cb(data):
+        print("Keyboard:",data)
+        # if(not data["monitor"].is_distant):
+        #     return
+        if(len(gv.command_queues)>0):
+            gv.command_queues[list(gv.command_queues.keys())[0]].put({"cmd":"key", "key":data["key"], "type":data["type"]})
+
+    gv.devices_manager.mouse_callbacks.append(moved_cb)
+    gv.devices_manager.key_callbacks.append(key_cb)
 
     start_server_thread()
 
@@ -34,10 +42,10 @@ if __name__ == "__main__":
     try:
         while(not stop):
             window.update()
-            gv.mouse_manager.master_loop_iter()
+            gv.devices_manager.master_loop_iter()
             time.sleep(0.01)
 
-            #print(gv.mouse_manager.virtual_pos,end="\r")
+            #print(gv.devices_manager.virtual_pos,end="\r")
     finally:
         if(gv.cursor_manager is not None):
             gv.cursor_manager.set_cursor_visibility(True)

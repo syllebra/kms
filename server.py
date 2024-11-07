@@ -9,7 +9,7 @@ from queue import Queue
 HOST = '0.0.0.0'
 PORT = 31998
 
-state = {}
+import ctypes
 
 def is_socket_valid(socket_instance):
     """ Return True if this socket is connected. """
@@ -40,9 +40,6 @@ class InputListenerSocketSend:
         gv.command_queues[addr] = Queue()
 
     def runloop(self):
-        keyboard.hook(self.handle_keys_callback, suppress=True)
-        
-        #keyboard.wait()
         while(not self.stop):
 
             if(self.addr in gv.command_queues):
@@ -51,6 +48,8 @@ class InputListenerSocketSend:
                     #print("Treating ", cmd)
                     if(cmd["cmd"]=="move"):
                         self.connection.send(f'<<{"move"}-{cmd["pos"][0]},{cmd["pos"][1]}>>'.encode())
+                    elif(cmd["cmd"]=="key"):
+                        self.connection.send(f'<<{"d"if cmd["type"]=="down" else "u"}-{cmd["key"]}>>'.encode())
                 except ConnectionError as ce:
                     print(f"Unable to reach client with socket {self.connection} ({ce}). Closing...")
                     self.stop = True
@@ -64,33 +63,9 @@ class InputListenerSocketSend:
             #time.sleep(0.05)
             pass
         
-        keyboard.unhook_all()
-        keyboard.unhook_all_hotkeys()
         print(f"Closing connection {self.addr}.")
         if(self.addr in gv.command_queues):
             del gv.command_queues[self.addr]
-
-    def handle_keys_callback(self, e: keyboard.KeyboardEvent):
-        try:
-            key = e.scan_code#(e.scan_code, e.name, e.is_keypad)
-            if(key not in state or state[key] != e.event_type):
-                print(e.to_json())
-                state[key] = e.event_type
-                self.connection.send(f'<<{"d"if e.event_type=="down" else "u"}-{e.scan_code}>>'.encode())
-
-                # if(e.event_type == "down"):
-                #     keyboard.press(e.scan_code)
-                # else:
-                #     keyboard.release(e.scan_code)
-        except ConnectionError as ce:
-            print(f"Unable to reach client with socket {self.connection} ({ce}). Closing...")
-            self.stop = True
-        except ConnectionResetError as ce:
-            print(f"Connection reset with {self.connection} ({ce}). Closing...")
-            self.stop = True
-        except Exception as e:
-            print(f"Exception ({ce}). Closing...")
-            self.stop = True
 
 def accept_client(connection,addr):
     listen = InputListenerSocketSend(connection,addr)

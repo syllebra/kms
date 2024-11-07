@@ -3,7 +3,10 @@ import re
 import sys
 import pyautogui
 from pynput.mouse import Controller, Button
+from pynput.keyboard import Controller as KBCtrl, KeyCode
 import mouse
+
+import ctypes
 
 
 # Improve performance, pyautogui has a 'fail-safe', where you get 0.1s to move the mouse to 0,0 to exit. https://stackoverflow.com/questions/46736652/pyautogui-press-causing-lag-when-called
@@ -14,6 +17,7 @@ pyautogui.MINIMUM_DURATION=0
 pyautogui.MINIMUM_SLEEP=0
 numberBuffer = 0 
 
+kb_ctrl = KBCtrl()
 mouse_ctrl = Controller()
 
 import keyboard
@@ -36,12 +40,14 @@ def perform_according(cmd):
     if action == 'd':
         #pyautogui.keyDown(key)
         time.sleep(.01)
-        keyboard.press(int(key))
+        #keyboard.press(int(key))
         print("Key Down:", int(key))
+        kb_ctrl.press(KeyCode.from_vk(int(key)))
     elif action == 'u':
         #pyautogui.keyUp(key)
         time.sleep(.01)
-        keyboard.release(int(key))
+        #keyboard.release(int(key))
+        kb_ctrl.release(KeyCode.from_vk(int(key)))
         print("Key Up:", int(key))
     elif action == 'move':
         print(cmd)
