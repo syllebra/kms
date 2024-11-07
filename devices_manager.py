@@ -18,8 +18,8 @@ class DevicesManager():
         self.mouse_listener = MouseListener()
         self.mouse_listener.start()
 
-        self.keyboard_controller = MouseController()
-        self.keyboard_listener = MouseListener()
+        self.keyboard_controller = KeyboardController()
+        self.keyboard_listener = KeyboardListener()
         self.keyboard_listener.start()
 
         self.hwnd = hwnd
