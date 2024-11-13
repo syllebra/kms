@@ -44,7 +44,7 @@ if __name__ == "__main__":
         while not stop:
             window.update()
             gv.devices_manager.master_loop_iter()
-            time.sleep(0.01)
+            time.sleep(0.001)
 
             # print(gv.devices_manager.virtual_pos,end="\r")
     finally:
