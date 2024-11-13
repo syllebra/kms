@@ -56,6 +56,8 @@ class DevicesManager:
                     code = e.name[-1] if "thumb" in e.name else e.name[0]
                     cb_evt = f"m{'d' if current_state else 'u'}{code}"
                 self.mouse_bttn_state[e.name] = current_state
+            elif "wheel" in e.event_type:
+                cb_evt = f"mw{'d' if "down" in e.event_type else 'u'}"
             else:
                 print("Unhandled Mouse event:", e)
 

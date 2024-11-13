@@ -62,6 +62,8 @@ def perform_according(cmd):
         func = mouse_ctrl.press if action[1] == "d" else mouse_ctrl.release
         if action[2] in buttons_map:
             func(buttons_map[action[2]])
+    elif action[:2] == "mw":
+        mouse.wheel(key if action[2] == "u" else -key)
     return True
 
 
