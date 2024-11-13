@@ -3,14 +3,10 @@ import socket
 import threading
 from queue import Queue
 
-import keyboard
-
 import global_vars as gv
 
 HOST = "0.0.0.0"
 PORT = 31998
-
-import ctypes
 
 
 def is_socket_valid(socket_instance):
@@ -29,7 +25,7 @@ def is_socket_valid(socket_instance):
         socket_instance.getpeername()
     except socket.error as err:
         err_type = err.args[0]
-        if err_type in [errno.EBADF, errno.ENOTCONN]:  #   9: Bad file descriptor.
+        if err_type in [errno.EBADF, errno.ENOTCONN]:  # 9: Bad file descriptor.
             return False  # 107: Transport endpoint is not connected
 
     return True
@@ -52,7 +48,7 @@ class InputListenerSocketSend:
                     if cmd["cmd"] == "move" or cmd["cmd"][0] == "m":
                         self.connection.send(f'<<{cmd["cmd"]}-{cmd["pos"][0]},{cmd["pos"][1]}>>'.encode())
                     elif cmd["cmd"] == "key":
-                        self.connection.send(f'<<{"d"if cmd["type"]=="down" else "u"}-{cmd["key"]}>>'.encode())
+                        self.connection.send(f'<<{"d"if cmd["type"] == "down" else "u"}-{cmd["key"]}>>'.encode())
                 except ConnectionError as ce:
                     print(f"Unable to reach client with socket {self.connection} ({ce}). Closing...")
                     self.stop = True
@@ -60,7 +56,7 @@ class InputListenerSocketSend:
                     print(f"Connection reset with {self.connection} ({ce}). Closing...")
                     self.stop = True
                 except Exception as e:
-                    print(f"Exception ({ce}). Closing...")
+                    print(f"Exception ({e}). Closing...")
                     self.stop = True
             # print("loop")
             # time.sleep(0.05)
@@ -93,7 +89,7 @@ def start_server():
             t.join()
             try:
                 connection.close()
-            except:
+            except Exception:
                 pass
 
         except socket.timeout:

@@ -48,7 +48,8 @@ class DevicesManager:
                 # print(f"Mouse move: {e.device.vendor_name} : {e.delta_x},{e.delta_y}")
                 self.virtual_pos = (self.virtual_pos[0] + e.delta_x, self.virtual_pos[1] + e.delta_y)
             elif e.event_type in ["up", "down"]:
-                # print(f"{"Released" if e.event_type == "up" else "Pressed"} {e.name} on {e.device_type} {e.device.vendor_name}")
+                # print(f"{"Released" if e.event_type == "up" else "Pressed"} {e.name} on {e.device_type}
+                #   {e.device.vendor_name}")
                 previous_state = self.mouse_bttn_state.get(e.name, False)
                 current_state = e.event_type == "down"
                 if current_state != previous_state:

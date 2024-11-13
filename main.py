@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print(str(gv.monitors_manager))
 
     def mouse_cb(data):
-        ##print("Moved:",data)
+        # print("Moved:",data)
         # print("Moved:",len(gv.command_queues))
         if not data["monitor"].is_distant:
             return

@@ -1,6 +1,7 @@
 import re
 import socket
 import sys
+import time
 
 import mouse
 import pyautogui
@@ -22,10 +23,6 @@ mouse_ctrl = Controller()
 
 buttons_map = {"l": Button.left, "r": Button.right, "m": Button.middle, "1": Button.x1, "2": Button.x2}
 
-import time
-
-import keyboard
-
 
 def perform_according(cmd):
     global numberBuffer
@@ -37,7 +34,7 @@ def perform_according(cmd):
     try:
         action_key = re.match(r"<<(.*)>>", cmd)[1].split(">><<")[0]
         action, key = action_key.split("-")
-    except:
+    except Exception:
         pass
     # print(action, key, action_key)
     if not action and not key:
@@ -66,40 +63,6 @@ def perform_according(cmd):
         if action[2] in buttons_map:
             func(buttons_map[action[2]])
 
-        # mouse_action = {
-        #     'left': [-10,0],
-        #     'down': [0,10],
-        #     'up': [0,-10],
-        #     'right': [10,0],
-        #     'lclick': 'lclick',
-        #     'rclick': 'rclick',
-        # }.get(key)
-        # if type(mouse_action) == type([]):
-        #     try :
-        #         current_position = pyautogui.position()
-        #         newX = current_position[0] + mouse_action[0]*(numberBuffer+1)
-        #         newY = current_position[1] + mouse_action[1]*(numberBuffer+1)
-        #         numberBuffer = 0
-        #         print('moving to: ',newX, newY)
-        #         pyautogui.moveTo(newX, newY)
-        #     except Exception as err:
-        #         print('move err: ',err)
-        #         pass
-        # elif mouse_action == 'lclick':
-        #     try :
-        #         print('left clicking')
-        #         pyautogui.click()
-        #     except Exception as err:
-        #         print('click left err: ',err)
-        #         pass
-        # elif mouse_action == 'rclick':
-        #     try :
-        #         print('right clicking')
-        #         pyautogui.click(button='right')
-        #     except Exception as err:
-        #         print('click right err: ',err)
-        #         pass
-
 
 def parseLastRequest(req):
     print(req)
@@ -124,7 +87,7 @@ def waitConnection(host):
                 try:
                     reply = s.recv(4096).decode()
                     result = perform_according(reply)
-                    if result == False:
+                    if not result:
                         print("ending Connection")
                         return None
                 except socket.error:
@@ -135,7 +98,7 @@ def waitConnection(host):
         finally:
             try:
                 s.close()
-            except:
+            except Exception:
                 pass
 
 
