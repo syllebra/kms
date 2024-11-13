@@ -52,7 +52,7 @@ def perform_according(cmd):
         kb_ctrl.release(KeyCode.from_vk(int(key)))
         print("Key Up:", int(key))
     elif action == "move":
-        print(cmd)
+        # print(cmd)
         pos = key.split(",")
 
         p = mouse.get_position()
